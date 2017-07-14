@@ -1,8 +1,26 @@
 agm-map,
 .sebm-google-map-container {
-  height: 300px;
+  height: 500px;
+  width:100%;
 }
-input{
+input[type="text"]{
 	height:40px;
 	width: 300px;
 }
+input.add{
+	background:green;
+	color: #fff;
+	border: 0px;
+	cursor: pointer;
+	float: right;
+}
+input.remove{
+	background:red;
+	color: #fff;
+	border: 0px;
+	cursor: pointer;
+	float: right;
+}
+ul{display: block;padding: 0; width:400px; display: inline-block;}
+li{ border-bottom:1px solid #ccc; width:auto; display: block; width:100%; margin-bottom: 5px;}
+.col-50{ width: 50%; float: left; }

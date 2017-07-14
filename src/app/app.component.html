@@ -1,13 +1,26 @@
 <div class="container">
-      <h1>Angular 2 Google Map Direction Display</h1>
-      <div class="form-group">
-        <input placeholder="Enter source location" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #pickupInput [formControl]="destinationInput">
-        
-        <input placeholder="Enter waypoints" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #pickupOutput1 [formControl]="destinationOutput1" >
+<div class="col-50">
+<h2>Add atleast 2 cordinates from list</h2>
+<ul class="heroes">
+  <li *ngFor="let location of locations">
+    lat:{{location.lat}}, lng:{{location.lng}} 
+    <input class="add" type="button" value="+" (click)="clickAdd(location.id)" />
+  </li>
+</ul>
+<hr/>
 
-        <input placeholder="Enter destination" autocorrect="off" autocapitalize="off" spellcheck="off" type="text" class="form-control" #pickupOutput [formControl]="destinationOutput" >
-      </div>
+<ul>
+<h2>Cordinates that will display in map</h2>
+  <li *ngFor="let add of added">
+    
+    lat:{{add.lat}}, lng:{{add.lng}} 
+    <input type="button" class="remove" value="-" (click)="clickRemove(add.id)" /> 
+  </li>
+</ul>
+</div>
+<div class="col-50">
        <sebm-google-map [latitude]="latitude" [longitude]="longitude" [scrollwheel]="false" [zoom]="zoom" [styles]="mapCustomStyles">
                 <sebm-google-map-directions [origin]="origin" [destination]="destination"></sebm-google-map-directions>
               </sebm-google-map>
+    </div>
     </div>

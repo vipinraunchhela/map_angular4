@@ -1,10 +1,7 @@
 import {GoogleMapsAPIWrapper}  from 'angular2-google-maps/core';
 import { Directive,  Input, Output } from '@angular/core';
 
-
 declare var google: any;
-
-
 
 @Directive({
   selector: 'sebm-google-map-directions'
@@ -18,18 +15,37 @@ export class DirectionsMapDirective {
   @Input() directionsDisplay:any;
   @Input() estimatedTime : any;
   @Input() estimatedDistance : any;
+  @Input() addedDirections:any;
  
   constructor (private gmapsApi: GoogleMapsAPIWrapper) {}
   updateDirections(){
     this.gmapsApi.getNativeMap().then(map => {
-              if(!this.originPlaceId || !this.destinationPlaceId ){
+              var added=this.addedDirections;
+              if(typeof added==='undefined' || added===null || added.length<2)
+              {
+                this.directionsDisplay.setMap(null);
+                this.directionsDisplay.setDirections(null);
                 return;
               }
+
+              var org=null; 
+              var des=null;
+              var wayP=[];
+
+              for (var i = 0;  i< added.length; i++) {
+                if(i===0) {
+                  org=new google.maps.LatLng(added[i].lat, added[i].lng);
+                }
+                else if(added.length===(i+1)) {
+                  des=new google.maps.LatLng(added[i].lat, added[i].lng);
+                }
+                else {
+                  wayP.push(  {"location":{"lat":added[i].lat,"lng":added[i].lng},"stopover":true} );
+                }
+              }
+
               var directionsService = new google.maps.DirectionsService;
-              var me = this;
-              var latLngA = new google.maps.LatLng({lat: this.origin.latitude, lng: this.origin.longitude });
-              var latLngB = new google.maps.LatLng({lat: this.destination.latitude, lng: this.destination.longitude });
-              this.directionsDisplay.setMap(null);
+
               this.directionsDisplay.setMap(map);
               this.directionsDisplay.setOptions({
                 polylineOptions: {
@@ -40,33 +56,20 @@ export class DirectionsMapDirective {
                 });
               this.directionsDisplay.setDirections({routes: []});
               directionsService.route({
-                      origin: {placeId : this.originPlaceId },
-                      destination: {placeId : this.destinationPlaceId },
-                      // avoidHighways: true,
-                      // travelMode: 'DRIVING'
-                      // origin: new google.maps.LatLng(30.4599, 78.0664),
-                      // destination:new google.maps.LatLng(19.0760, 72.8777),
-                      waypoints: this.waypoints,
+                      origin: org,
+                      destination: des,
+                      waypoints: wayP,
                       optimizeWaypoints: true,
                       travelMode: 'DRIVING'
 
-
-
-                    }, function(response: any, status: any) {
-                                if (status === 'OK') {
-                                  me.directionsDisplay.setDirections(null);
-                                  me.directionsDisplay.setDirections(response);
-                                  map.setZoom(30);
-                                  console.log(me.getcomputeDistance (latLngA, latLngB));
-                                  var point = response.routes[ 0 ].legs[ 0 ];
-                                  me.estimatedTime = point.duration.text ;
-                                  me.estimatedDistance = point.distance.text;
-                                  console.log(me.estimatedTime);
-                                  console.log( 'Estimated travel time: ' + point.duration.text + ' (' + point.distance.text + ')' );
- 
-                                } else {
-                                  console.log('Directions request failed due to ' + status);
-                                }
+                    }, (response: any, status: any) => {
+                        if (status === 'OK') {
+                          this.directionsDisplay.setDirections(null);
+                          this.directionsDisplay.setDirections(response);
+                        } 
+                        else {
+                          console.log('Directions request failed due to ' + status);
+                        }
               });
     });
 
