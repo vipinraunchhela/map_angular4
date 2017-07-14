@@ -1,0 +1,8 @@
+agm-map,
+.sebm-google-map-container {
+  height: 300px;
+}
+input{
+	height:40px;
+	width: 300px;
+}
